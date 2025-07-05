@@ -28,6 +28,7 @@ function App() {
   return (
     <PageWrapper>
       <Router>
+        <div className="min-h-screen flex flex-col overflow-x-hidden">
         <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Routes>
           <Route path="/" element={<Home searchTerm={searchTerm} />} />
@@ -50,6 +51,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
+        </div>
       </Router>
     </PageWrapper>
   );
