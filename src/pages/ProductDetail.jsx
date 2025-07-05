@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCart } from "../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -9,6 +10,7 @@ function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`https://fakestoreapi.com/products/${id}`)
@@ -28,7 +30,10 @@ function ProductDetail() {
       dispatch({ type: "ADD_TO_CART", payload: product });
     }
   };
-
+  const handleBuyNow = () => {
+    dispatch({ type: "ADD_TO_CART", payload: product });
+    navigate("/checkout");
+  };
   return (
     <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-10 p-6">
       <img
@@ -44,20 +49,46 @@ function ProductDetail() {
         </p>
         <div className="mb-4">
           <label className="mr-2 font-medium">Quantity:</label>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
-            className="w-20 px-2 py-1 border rounded"
-          />
+          <div className="flex items-center border rounded w-fit overflow-hidden">
+            <button
+              className="bg-gray-200 dark:bg-gray-700 px-3 py-1 text-lg"
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+            >
+              –
+            </button>
+            <input
+              type="number"
+              min="1"
+              value={quantity}
+              onChange={(e) => {
+                const val = Math.max(1, parseInt(e.target.value) || 1);
+                setQuantity(val);
+              }}
+              className="w-14 text-center py-1 dark:bg-gray-800 dark:text-white border-l border-r border-gray-300 dark:border-gray-600"
+            />
+            <button
+              className="bg-gray-200 dark:bg-gray-700 px-3 py-1 text-lg"
+              onClick={() => setQuantity((q) => Math.min(10, q + 1))} // Optional max 10
+            >
+              +
+            </button>
+          </div>
         </div>
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-          onClick={handleAddToCart}
-        >
-          Add to Cart
-        </button>
+
+        <div className="flex gap-4">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </button>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </button>
+        </div>
       </div>
     </div>
   );

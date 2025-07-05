@@ -2,6 +2,8 @@ import { useCart } from "../contexts/CartContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { useEffect } from "react";
 
 function Checkout() {
   const [error, setError] = useState("");
@@ -13,6 +15,13 @@ function Checkout() {
   const { cartItems } = useCart();
   const navigate = useNavigate();
   const { dispatch } = useCart();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
