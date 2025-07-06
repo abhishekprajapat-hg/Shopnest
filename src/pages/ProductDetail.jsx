@@ -57,7 +57,7 @@ function ProductDetail() {
           {product.description}
         </p>
 
-        <p className="text-3xl font-bold text-blue-600">₹{product.price}</p>
+        <p className="text-3xl font-bold text-blue-600">${product.price}</p>
 
         {/* Quantity Selector */}
         <div className="flex items-center gap-4">

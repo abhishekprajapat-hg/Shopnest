@@ -112,7 +112,7 @@ function Checkout() {
           ></textarea>
 
           <div className="text-right text-lg font-semibold">
-            Total: ₹{total.toFixed(2)}
+            Total: ${total.toFixed(2)}
           </div>
 
           <button

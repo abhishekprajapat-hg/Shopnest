@@ -28,7 +28,7 @@ function App() {
   return (
     <PageWrapper>
       <Router>
-        <div className="min-h-screen flex flex-col overflow-x-hidden">
+        <div className="min-h-screen flex flex-col overflow-x-hidden pt-16">
         <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <Routes>
           <Route path="/" element={<Home searchTerm={searchTerm} />} />

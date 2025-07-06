@@ -32,15 +32,15 @@ function CategoryPage() {
             <Link
               key={product.id}
               to={`/products/${product.id}`}
-              className="border rounded-lg p-4 hover:shadow dark:bg-gray-800"
+              className="border rounded-lg hover:shadow dark:bg-gray-800"
             >
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full h-60 object-contain mb-2"
+                className="w-full h-60 object-contain mb-2 bg-white border rounded-lg"
               />
-              <h3 className="font-semibold">{product.title}</h3>
-              <p className="text-blue-600 font-bold mt-1">${product.price}</p>
+              <h3 className="font-semibold p-4">{product.title}</h3>
+              <p className="text-blue-600 font-bold mt-1 p-4">${product.price}</p>
             </Link>
           ))}
         </div>

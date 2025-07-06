@@ -49,7 +49,7 @@ function Cart() {
               <h3 className="font-semibold text-gray-800 dark:text-white text-sm md:text-base">
                 {item.title}
               </h3>
-              <p className="text-blue-600 font-bold mt-1">₹{item.price}</p>
+              <p className="text-blue-600 font-bold mt-1">${item.price}</p>
 
               {/* Quantity Controls */}
               <div className="flex items-center gap-3 mt-3">

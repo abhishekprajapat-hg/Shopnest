@@ -80,7 +80,7 @@ function Profile() {
                   <strong>Date:</strong> {new Date(order.date).toLocaleString()}
                 </p>
                 <p>
-                  <strong>Total:</strong> ₹{order.total.toFixed(2)}
+                  <strong>Total:</strong> ${order.total.toFixed(2)}
                 </p>
                 <div className="mt-2">
                   <strong>Items:</strong>

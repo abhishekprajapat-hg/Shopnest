@@ -1,13 +1,11 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 
-// Initial cart state
 const CartContext = createContext();
 
 const initialState = {
   cartItems: [],
 };
 
-// Reducer function for cart actions
 function cartReducer(state, action) {
   switch (action.type) {
     case "ADD_TO_CART":
@@ -55,7 +53,7 @@ function cartReducer(state, action) {
               ? { ...item, quantity: item.quantity - 1 }
               : item
           )
-          .filter((item) => item.quantity > 0), // auto remove if qty becomes 0
+          .filter((item) => item.quantity > 0),
       };
 
     case "CLEAR_CART":
@@ -69,9 +67,18 @@ function cartReducer(state, action) {
   }
 }
 
-// Context provider
 export function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState);
+  // 🧠 Load from localStorage on first render
+  const savedCart = localStorage.getItem("shopnest-cart");
+  const [state, dispatch] = useReducer(
+    cartReducer,
+    savedCart ? JSON.parse(savedCart) : initialState
+  );
+
+  // 💾 Save to localStorage on every cart update
+  useEffect(() => {
+    localStorage.setItem("shopnest-cart", JSON.stringify(state));
+  }, [state]);
 
   return (
     <CartContext.Provider value={{ cartItems: state.cartItems, dispatch }}>
@@ -80,7 +87,6 @@ export function CartProvider({ children }) {
   );
 }
 
-// Custom hook to use context
 export function useCart() {
   return useContext(CartContext);
 }
