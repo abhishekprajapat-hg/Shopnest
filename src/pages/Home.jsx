@@ -107,11 +107,10 @@ function Home({ searchTerm }) {
                   key={product.id}
                   className="border rounded-lg overflow-hidden shadow hover:shadow-lg transition bg-white dark:bg-gray-800"
                 >
-                  ``
                   <img
                     src={product.image}
                     alt={product.title}
-                    className="w-full h-60 object-contain bg-gray-100"
+                    className="w-full h-60 object-contain bg-white"
                   />
                   <div className="p-4">
                     <h3 className="text-lg font-semibold line-clamp-2">

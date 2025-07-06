@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
@@ -9,15 +9,15 @@ export function AuthProvider({ children }) {
   });
 
   const signup = (name, email, password) => {
-    const userData = { name, email, password };
+    const userData = { name, email, password, orders: [] };
     localStorage.setItem("shopnest-user", JSON.stringify(userData));
     setUser(userData);
   };
 
   const login = (email, password) => {
     const stored = JSON.parse(localStorage.getItem("shopnest-user"));
-
     if (!stored) return false;
+
     if (stored.email === email && stored.password === password) {
       setUser(stored);
       return true;
@@ -27,12 +27,21 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
-    // Optional: remove stored user to force re-login next time
-    // localStorage.removeItem("shopnest-user");
+    // localStorage.removeItem("shopnest-user"); // optional
+  };
+
+  // ✅ FIXED: Now it uses `user` and `setUser` in correct scope
+  const saveOrder = (order) => {
+    const updatedUser = {
+      ...user,
+      orders: [...(user?.orders || []), order],
+    };
+    setUser(updatedUser);
+    localStorage.setItem("shopnest-user", JSON.stringify(updatedUser));
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, signup, login, logout, saveOrder }}>
       {children}
     </AuthContext.Provider>
   );

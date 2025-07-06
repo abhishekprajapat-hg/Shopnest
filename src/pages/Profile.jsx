@@ -1,78 +1,103 @@
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Profile() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const [localUser, setLocalUser] = useState(user);
+
+  // Cancel Order
+  const handleCancelOrder = (orderId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to cancel this order?"
+    );
+    if (!confirmed) return;
+
+    const updatedOrders = user.orders.filter((order) => order.id !== orderId);
+    const updatedUser = {
+      ...user,
+      orders: updatedOrders,
+    };
+
+    setLocalUser(updatedUser);
+    localStorage.setItem("shopnest-user", JSON.stringify(updatedUser));
+    window.location.reload(); // Optional: To refresh UI
   };
 
-  const avatarInitial = user?.name?.[0]?.toUpperCase() || "U";
+  if (!user) {
+    return (
+      <div className="text-center mt-10">
+        <h2 className="text-xl font-bold">Please log in to view profile.</h2>
+        <Link to="/login" className="text-blue-600 underline mt-4 block">
+          Go to Login
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6 flex items-center justify-center">
-      <div className="bg-white dark:bg-gray-800 w-full max-w-3xl p-8 rounded-xl shadow">
-        {/* Avatar and Name */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center text-2xl font-bold">
-            {avatarInitial}
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{user?.name}</h2>
-            <p className="text-gray-600 dark:text-gray-400">{user?.email}</p>
-          </div>
-        </div>
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-white p-4">
+      <h2 className="text-2xl font-bold mb-4 text-center">👤 Your Profile</h2>
 
-        {/* Editable Info */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">Personal Info</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              className="px-4 py-2 rounded border dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-              type="text"
-              placeholder="Name"
-              value={user?.name}
-              readOnly
-            />
-            <input
-              className="px-4 py-2 rounded border dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-              type="email"
-              placeholder="Email"
-              value={user?.email}
-              readOnly
-            />
-          </div>
-        </div>
+      <div className="max-w-2xl mx-auto bg-gray-100 dark:bg-gray-800 p-6 rounded-xl shadow-md">
+        <p>
+          <strong>Name:</strong> {user.name}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
 
-        {/* Order History */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">Order History</h3>
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded text-sm text-gray-700 dark:text-gray-300">
-            <p>🧾 Order #123456 – 2 items – Delivered – 1st July 2025</p>
-            <p>🧾 Order #123457 – 1 item – In Transit – 3rd July 2025</p>
-          </div>
-        </div>
-
-        {/* Saved Address */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-white mb-2">Saved Address</h3>
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded text-sm text-gray-700 dark:text-gray-300">
-            Abhishek Prajapat<br />
-            123 Main Street,<br />
-            Jaipur, Rajasthan, 302001
-          </div>
-        </div>
-
-        {/* Logout */}
         <button
-          onClick={handleLogout}
-          className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded text-sm font-semibold"
+          onClick={logout}
+          className="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
         >
           Logout
         </button>
+
+        <h3 className="text-xl font-semibold mt-8 mb-2">🧾 Order History</h3>
+
+        {user.orders && user.orders.length > 0 ? (
+          <div className="space-y-4">
+            {user.orders.map((order, index) => (
+              <div
+                key={index}
+                className="bg-white dark:bg-gray-700 p-4 rounded-lg border dark:border-gray-600"
+              >
+                <div className="flex justify-between items-center">
+                  <p>
+                    <strong>Order ID:</strong> #{order.id}
+                  </p>
+
+                  <button
+                    onClick={() => handleCancelOrder(order.id)}
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    Cancel Order
+                  </button>
+                </div>
+                <p>
+                  <strong>Date:</strong> {new Date(order.date).toLocaleString()}
+                </p>
+                <p>
+                  <strong>Total:</strong> ₹{order.total.toFixed(2)}
+                </p>
+                <div className="mt-2">
+                  <strong>Items:</strong>
+                  <ul className="list-disc ml-6 mt-1">
+                    {order.items.map((item) => (
+                      <li key={item.id}>
+                        {item.title} × {item.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 mt-4">You have no previous orders.</p>
+        )}
       </div>
     </div>
   );
