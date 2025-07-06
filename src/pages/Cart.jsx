@@ -104,7 +104,7 @@ function Cart() {
         <hr className="my-2 border-gray-300 dark:border-gray-600" />
         <div className="flex justify-between font-bold text-gray-800 dark:text-white text-base">
           <span>Total</span>
-          <span>₹{total.toFixed(2)}</span>
+          <span>${total.toFixed(2)}</span>
         </div>
 
         <button
