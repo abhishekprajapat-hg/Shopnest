@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
-    // localStorage.removeItem("shopnest-user"); // optional
+    localStorage.removeItem("shopnest-user");
   };
 
   // ✅ FIXED: Now it uses `user` and `setUser` in correct scope
